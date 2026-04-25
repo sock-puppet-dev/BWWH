@@ -21,6 +21,7 @@ defaults:
 
 env:
   HUGO_VERSION: 0.157.0
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   build:
