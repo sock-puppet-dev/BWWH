@@ -2,6 +2,12 @@
 
 Эта шпаргалка написана для новичка. Ее цель — помочь понять, из каких частей состоит Hugo-проект, какие команды запускать и где искать причину ошибки.
 
+Опубликованная версия проекта BWWH:
+
+```text
+https://sock-puppet-dev.github.io/BWWH/
+```
+
 ## 1. Что такое Hugo
 
 Hugo — это генератор статических сайтов.
@@ -515,3 +521,5 @@ https://USERNAME.github.io/REPOSITORY/
 ```text
 https://sock-puppet-dev.github.io/BWWH/
 ```
+
+Это текущий опубликованный адрес BWWH на GitHub Pages.
