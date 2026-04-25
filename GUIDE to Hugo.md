@@ -452,3 +452,66 @@ hugo new about.md
 # Собрать сайт в public
 hugo
 ```
+
+## 17. Разместить Hugo на GitHub Pages
+
+GitHub Pages может сам собирать Hugo-сайт через GitHub Actions.
+
+Идея такая:
+
+1. Ты отправляешь исходники проекта на GitHub.
+2. GitHub Actions запускает команду `hugo`.
+3. Hugo собирает сайт в папку `public`.
+4. GitHub Pages публикует результат в интернете.
+
+В проекте для этого используется файл:
+
+```text
+.github/workflows/hugo.yml
+```
+
+Главные настройки внутри workflow:
+
+```yaml
+env:
+  HUGO_VERSION: 0.157.0
+```
+
+Комментарий:
+
+- это версия Hugo, которую GitHub установит во время сборки;
+- желательно использовать ту же версию, что и локально;
+- локальную версию можно проверить командой `hugo version`.
+
+Команда сборки в workflow:
+
+```bash
+hugo --minify --baseURL "${{ steps.pages.outputs.base_url }}/"
+```
+
+Комментарий:
+
+- `hugo` собирает сайт;
+- `--minify` немного уменьшает итоговый HTML/CSS/JS;
+- `--baseURL` подставляет правильный адрес GitHub Pages.
+
+Что нужно сделать на GitHub:
+
+1. Открой репозиторий.
+2. Перейди в `Settings`.
+3. Открой раздел `Pages`.
+4. В `Build and deployment` выбери `Source: GitHub Actions`.
+5. Сделай `git push` в ветку `main`.
+6. Открой вкладку `Actions` и дождись зеленой галочки.
+
+После успешного деплоя сайт будет доступен примерно по адресу:
+
+```text
+https://USERNAME.github.io/REPOSITORY/
+```
+
+Для этого проекта адрес будет похож на:
+
+```text
+https://sock-puppet-dev.github.io/BWWH/
+```
