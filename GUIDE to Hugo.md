@@ -218,7 +218,7 @@ On this site, you'll find:
 ## 9. Создать новую страницу
 
 ```bash
-hugo new about.md
+hugo new index.md
 ```
 
 Hugo создаст файл:
@@ -453,7 +453,7 @@ hugo new site . --format yaml
 hugo server -D
 
 # Создать новую страницу
-hugo new about.md
+hugo new index.md
 
 # Собрать сайт в public
 hugo
