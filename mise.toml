@@ -1,0 +1,4 @@
+[tools]
+hugo = "0.160.1"
+node = "24"
+python = "3.14"
