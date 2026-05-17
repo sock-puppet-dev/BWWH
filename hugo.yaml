@@ -1,4 +1,25 @@
-baseURL: https://example.org/
-languageCode: en-us
-title: My New Hugo Project
+baseURL: https://sock-puppet-dev.github.io/BWWH/
+locale: en-US
+title: BWWH
 theme: basic
+
+menus:
+  main:
+    - name: Home
+      pageRef: /
+      weight: 10
+    - name: About
+      pageRef: /about
+      weight: 20
+    - name: Resume
+      pageRef: /resume
+      weight: 30
+    - name: Contact
+      pageRef: /contact
+      weight: 40
+    - name: Learning Posts
+      pageRef: /posts
+      weight: 50
+    - name: Tags
+      pageRef: /tags
+      weight: 60

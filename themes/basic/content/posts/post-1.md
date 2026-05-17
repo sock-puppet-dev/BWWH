@@ -1,9 +1,11 @@
 +++
-title = 'Post 1'
+title = 'Learning Example: Post 1'
 date = 2023-01-15T09:00:00-07:00
 draft = false
 tags = ['red']
 +++
+
+This is a learning example post from the local `basic` theme. It is intentionally published so the project can demonstrate how Hugo can include content from a theme.
 
 Tempor proident minim aliquip reprehenderit dolor et ad anim Lorem duis sint eiusmod. Labore ut ea duis dolor. Incididunt consectetur proident qui occaecat incididunt do nisi Lorem. Tempor do laborum elit laboris excepteur eiusmod do. Eiusmod nisi excepteur ut amet pariatur adipisicing Lorem.
 
