@@ -108,16 +108,20 @@ BWWH/
 Пример из текущего проекта:
 
 ```yaml
-baseURL: https://example.org/
-languageCode: en-us
-title: My New Hugo Project
+baseURL: https://sock-puppet-dev.github.io/BWWH/
+locale: en-US
+title: BWWH
+theme: basic
 ```
 
 Что означает каждая строка:
 
 - `baseURL` — основной адрес сайта;
-- `languageCode` — язык сайта;
+- `locale` — язык и регион сайта;
 - `title` — название сайта.
+- `theme` — подключенная тема Hugo.
+
+Важно: в новых версиях Hugo вместо старого `languageCode` лучше использовать `locale`.
 
 В шаблоне значение `title` можно получить так:
 
@@ -134,13 +138,13 @@ title: My New Hugo Project
 Если в `hugo.yaml` написано:
 
 ```yaml
-title: My New Hugo Project
+title: BWWH
 ```
 
 то Hugo выведет:
 
 ```html
-<h1>My New Hugo Project</h1>
+<h1>BWWH</h1>
 ```
 
 ## 7. Контент: папка content
@@ -200,7 +204,7 @@ title: "Home"
 description: "My personal portfolio site."
 ---
 
-This is my portfolio.
+BWWH is a learning project for practicing Hugo, Hugo themes, Go Template expressions, and GitHub Pages deployment.
 
 On this site, you'll find:
 
@@ -476,23 +480,27 @@ GitHub Pages может сам собирать Hugo-сайт через GitHub 
 .github/workflows/hugo.yml
 ```
 
-Workflow устанавливает последнюю версию Hugo автоматически:
+Workflow устанавливает инструменты через `mise.toml`:
 
-```bash
-HUGO_VERSION="$(curl -fsSL https://api.github.com/repos/gohugoio/hugo/releases/latest | jq -r '.tag_name' | sed 's/^v//')"
+```toml
+[tools]
+hugo = "latest"
+node = "24"
+python = "3.14"
 ```
 
 Комментарий:
 
-- GitHub Actions обращается к GitHub API;
-- берет тег последнего релиза Hugo, например `v0.160.1`;
-- убирает букву `v`;
-- скачивает соответствующий `.deb`-файл Hugo Extended;
-- устанавливает его перед сборкой сайта.
+- GitHub Actions читает `mise.toml`;
+- `jdx/mise-action@v2` устанавливает нужные инструменты;
+- `hugo = "latest"` означает последнюю доступную версию Hugo;
+- `node = "24"` нужен для GitHub Actions и JavaScript-инструментов;
+- `python = "3.14"` оставлен как учебный пример управления несколькими runtime.
 
 Плюс такого подхода:
 
-- не нужно вручную менять `HUGO_VERSION`;
+- не нужно вручную менять версию Hugo;
+- локальная разработка и GitHub Actions используют один файл настройки инструментов;
 - каждый новый deploy будет использовать самый свежий релиз Hugo.
 
 Минус:

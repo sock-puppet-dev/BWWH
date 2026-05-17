@@ -3,6 +3,9 @@ locale: en-US
 title: BWWH
 theme: basic
 
+params:
+  description: Учебный проект по Hugo, Go Templates, темам, шаблонам и деплою на GitHub Pages.
+
 menus:
   main:
     - name: Home

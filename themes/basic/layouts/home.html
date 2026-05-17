@@ -1,8 +1,21 @@
 {{ define "main" }}
   {{ .Content }}
-  {{ range site.RegularPages }}
+
+  {{ $sitePages := where site.RegularPages "Section" "ne" "posts" }}
+  {{ $learningPosts := where site.RegularPages "Section" "posts" }}
+
+  <h2>Site pages</h2>
+  {{ range $sitePages }}
     <section>
-      <h2><a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></h2>
+      <h3><a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></h3>
+      {{ .Summary }}
+    </section>
+  {{ end }}
+
+  <h2>Learning posts</h2>
+  {{ range $learningPosts }}
+    <section>
+      <h3><a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></h3>
       {{ .Summary }}
     </section>
   {{ end }}
