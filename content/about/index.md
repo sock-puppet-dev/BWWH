@@ -1,11 +1,11 @@
 ---
 date: '2026-04-24T05:57:40+03:00'
-title: 'About'
-description: 'What the BWWH Hugo learning project is for.'
+title: 'О проекте'
+description: 'Для чего нужен учебный Hugo-проект BWWH.'
 draft: false
 ---
-BWWH is my learning project for Hugo and Hugo Go Template Expressions.
+BWWH — мой учебный проект по Hugo и Hugo Go Template Expressions.
 
-The goal is to understand how Hugo connects configuration, Markdown content, themes, layouts, partials, assets, and deployment into one static site.
+Цель проекта — понять, как Hugo соединяет конфигурацию, Markdown-контент, тему, layouts, partials, assets и деплой в один статический сайт.
 
-This page is intentionally simple: it is a clean place to test how regular content pages are rendered.
+Эта страница специально сделана простой. На ней удобно проверять, как Hugo рендерит обычные страницы из папки `content/`.

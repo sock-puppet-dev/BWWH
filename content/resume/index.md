@@ -1,17 +1,17 @@
 ---
 date: '2026-04-24T05:57:40+03:00'
-title: 'Resume'
-description: 'Learning checklist and current Hugo skills practiced in BWWH.'
+title: 'Навыки'
+description: 'Учебный список тем Hugo, которые отрабатываются в BWWH.'
 draft: false
 ---
-This page tracks the Hugo skills practiced in BWWH.
+Эта страница фиксирует темы Hugo, которые отрабатываются в BWWH.
 
-Current topics:
+Текущие темы:
 
-* Hugo project structure
-* Markdown content and front matter
-* Themes and layout lookup
-* Go Template context with `.`
-* `if`, `with`, `range`, and `where`
-* Partials, menus, assets, and taxonomies
-* GitHub Pages deployment with GitHub Actions
+* структура Hugo-проекта;
+* Markdown-контент и front matter;
+* темы и Hugo layout lookup;
+* контекст Go Templates и точка `.`;
+* `if`, `with`, `range` и `where`;
+* partials, меню, assets и taxonomies;
+* деплой на GitHub Pages через GitHub Actions.

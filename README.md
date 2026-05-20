@@ -1,32 +1,56 @@
 # BWWH
 
-Учебный проект по Hugo и Hugo Go Template Expressions.
+BWWH — учебный проект по Hugo и Hugo Go Template Expressions.
 
-Опубликованный сайт:
+Цель проекта — на практике разобрать, как Hugo собирает статический сайт из конфигурации, Markdown-контента, темы, шаблонов, partials, assets и GitHub Actions.
+
+## 1. Опубликованный сайт
 
 ```text
 https://sock-puppet-dev.github.io/BWWH/
 ```
 
-## Что внутри
+## 2. Основные учебные материалы
 
-- `GUIDE to Hugo.md` — шпаргалка по Hugo, структуре проекта, командам и деплою.
-- `GUIDE to Hugo Templates.md` — шпаргалка по Hugo templates, context `.`, `if`, `with`, `range`, pipes и функциям.
-- `content/` — Markdown-страницы сайта.
-- `themes/basic/layouts/` — активные HTML-шаблоны темы Hugo.
-- `themes/basic/content/posts/` — учебные demo posts из темы, которые Hugo тоже публикует.
-- `.github/workflows/hugo.yml` — автоматический деплой на GitHub Pages.
+- `GUIDE to Hugo.md` — общий гайд по Hugo и текущей структуре проекта.
+- `GUIDE to Hugo Templates.md` — гайд по Hugo Go Template Expressions.
+- `GUIDE to Hugo commands.md` — краткий справочник команд.
 
-## Учебная цель
+## 3. Текущая структура проекта
 
-Проект специально оставляет тему `basic` внутри репозитория, чтобы можно было изучать:
+```text
+BWWH/
+├── .github/workflows/hugo.yml
+├── archetypes/default.md
+├── content/
+│   ├── _index.md
+│   ├── about/index.md
+│   ├── contact/index.md
+│   ├── resume/index.md
+│   └── tags/_index.md
+├── themes/basic/
+│   ├── content/posts/
+│   ├── layouts/
+│   └── assets/
+├── hugo.yaml
+├── mise.toml
+├── README.md
+├── GUIDE to Hugo.md
+├── GUIDE to Hugo Templates.md
+└── GUIDE to Hugo commands.md
+```
 
-- как Hugo подключает тему через `theme: basic`;
-- как работают `layouts`, `partials`, assets и меню;
-- почему контент из `themes/basic/content/` тоже попадает в итоговый сайт;
-- как GitHub Actions собирает Hugo и публикует `public` на GitHub Pages.
+## 4. Важные файлы
 
-## Локальный запуск
+- `hugo.yaml` — главная конфигурация сайта.
+- `mise.toml` — версии инструментов для локальной разработки и GitHub Actions.
+- `content/` — основные страницы проекта.
+- `themes/basic/layouts/` — активные HTML-шаблоны темы.
+- `themes/basic/content/posts/` — учебные посты темы.
+- `.github/workflows/hugo.yml` — автоматическая сборка и деплой на GitHub Pages.
+- `public/` — результат сборки. Эту папку не нужно редактировать вручную.
+
+## 5. Локальный запуск
 
 ```bash
 hugo server -D
@@ -38,10 +62,35 @@ hugo server -D
 http://localhost:1313/
 ```
 
-## Сборка
+## 6. Сборка
 
 ```bash
-hugo
+hugo --minify --baseURL "https://sock-puppet-dev.github.io/BWWH/"
 ```
 
 Результат сборки появляется в папке `public`.
+
+## 7. Деплой
+
+Деплой выполняется автоматически через GitHub Actions.
+
+Цепочка такая:
+
+1. Изменения отправляются в ветку `main`.
+2. GitHub запускает `.github/workflows/hugo.yml`.
+3. `mise` устанавливает Hugo, Node.js и Python из `mise.toml`.
+4. GitHub Actions запускает `hugo --minify`.
+5. Папка `public` публикуется на GitHub Pages.
+
+## 8. Учебная особенность проекта
+
+В проекте специально используется локальная тема `basic`.
+
+Это сделано, чтобы изучить:
+
+- как Hugo подключает тему через `theme: basic`;
+- как работают `baseof.html`, `home.html`, `page.html`, `section.html`, `taxonomy.html`;
+- как работают partials;
+- как Hugo собирает контент не только из `content/`, но и из `themes/basic/content/`;
+- как меню задается в `hugo.yaml`;
+- как GitHub Pages получает готовую папку `public`.

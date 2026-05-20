@@ -1,5 +1,5 @@
 baseURL: https://sock-puppet-dev.github.io/BWWH/
-locale: en-US
+locale: ru-UA
 title: BWWH
 theme: basic
 
@@ -8,21 +8,21 @@ params:
 
 menus:
   main:
-    - name: Home
+    - name: Главная
       pageRef: /
       weight: 10
-    - name: About
+    - name: О проекте
       pageRef: /about
       weight: 20
-    - name: Resume
+    - name: Навыки
       pageRef: /resume
       weight: 30
-    - name: Contact
+    - name: Контакты
       pageRef: /contact
       weight: 40
-    - name: Learning Posts
+    - name: Учебные посты
       pageRef: /posts
       weight: 50
-    - name: Tags
+    - name: Теги
       pageRef: /tags
       weight: 60

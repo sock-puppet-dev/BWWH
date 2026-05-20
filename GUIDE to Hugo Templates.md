@@ -1,29 +1,22 @@
 # GUIDE to Hugo Templates
 
-Тема: Hugo Go Template Expressions.
+Этот файл объясняет Hugo Go Template Expressions на примерах текущего проекта BWWH.
 
-Эта шпаргалка объясняет шаблоны Hugo простыми словами: что означает `{{ ... }}`, что такое точка `.`, как работают `.Title`, `.Content`, `.Site.Title`, условия, циклы, pipes и комментарии.
+Главная цель: понять, что означает `{{ ... }}`, как работает точка `.`, как читать шаблоны и как Hugo превращает Markdown в HTML.
 
-## 1. Что использует Hugo
+## 1. Что такое Hugo template
 
-Hugo использует шаблонизатор Go:
+Template — это HTML-файл с выражениями Hugo.
 
-- `html/template`;
-- `text/template`.
+Пример:
 
-В документации Hugo это называется templating.
+```go-html-template
+<h1>{{ .Title }}</h1>
+```
 
-Шаблоны нужны, чтобы превратить:
+Hugo видит `{{ .Title }}` и подставляет туда заголовок текущей страницы.
 
-- настройки сайта;
-- Markdown-контент;
-- front matter;
-- данные Hugo;
-- функции шаблона;
-
-в готовую HTML-страницу.
-
-## 2. Что такое `{{ ... }}`
+## 2. Что означает `{{ ... }}`
 
 Конструкция:
 
@@ -33,35 +26,33 @@ Hugo использует шаблонизатор Go:
 
 называется template action.
 
-Проще:
+Это значит:
 
-> Все, что находится внутри `{{ ... }}`, Hugo не печатает как обычный текст, а выполняет как выражение шаблона.
+> Выполни выражение внутри фигурных скобок и вставь результат в HTML.
 
-Пример:
+Если в `hugo.yaml`:
+
+```yaml
+title: BWWH
+```
+
+то:
 
 ```go-html-template
 <h1>{{ .Site.Title }}</h1>
 ```
 
-Если в `hugo.yaml`:
-
-```yaml
-title: My New Hugo Project
-```
-
-то в HTML получится:
+даст:
 
 ```html
-<h1>My New Hugo Project</h1>
+<h1>BWWH</h1>
 ```
 
-## 3. Что такое точка `.`
+## 3. Что означает точка `.`
 
-Точка называется context.
+Точка `.` — это текущий контекст.
 
-В Hugo точка `.` означает "текущий объект".
-
-На обычной странице текущий объект чаще всего — это текущая страница.
+На обычной странице точка обычно означает текущую страницу.
 
 Пример:
 
@@ -69,51 +60,40 @@ title: My New Hugo Project
 {{ .Title }}
 ```
 
-означает:
+Означает:
 
-> Возьми `Title` у текущей страницы.
+> Возьми `Title` текущей страницы.
 
-Если в `content/about.md`:
+Если страница `content/about/index.md` содержит:
 
 ```yaml
----
-title: "About"
----
+title: 'О проекте'
 ```
 
-то:
+то `{{ .Title }}` вернет:
 
-```go-html-template
-<h1>{{ .Title }}</h1>
+```text
+О проекте
 ```
 
-станет:
+## 4. `.Site` и `site`
 
-```html
-<h1>About</h1>
-```
-
-## 4. `.Site`
-
-`.Site` — это объект всего сайта.
-
-Пример:
+В Hugo можно встретить оба варианта:
 
 ```go-html-template
 {{ .Site.Title }}
+{{ site.Title }}
 ```
 
-Читаем слева направо:
+Оба получают данные сайта.
 
-1. `.` — текущий контекст;
-2. `.Site` — сайт;
-3. `.Title` — название сайта.
+В текущей теме часто используется глобальная функция `site`:
 
-То есть:
+```go-html-template
+<h1>{{ site.Title }}</h1>
+```
 
-> Из текущего контекста возьми сайт, а у сайта возьми title.
-
-`Site.Title` возвращает `title` из конфигурации сайта, например из `hugo.yaml`.
+Она берет `title` из `hugo.yaml`.
 
 ## 5. `.Content`
 
@@ -121,261 +101,204 @@ title: "About"
 {{ .Content }}
 ```
 
-`.Content` выводит основной Markdown-контент страницы, уже преобразованный в HTML.
-
-Пример `content/about.md`:
-
-```markdown
----
-title: "About"
----
-
-This is my About page.
-```
-
-Пример шаблона:
-
-```go-html-template
-<h1>{{ .Title }}</h1>
-
-{{ .Content }}
-```
-
-Результат:
-
-```html
-<h1>About</h1>
-
-<p>This is my About page.</p>
-```
-
-## 6. Комментарии в Hugo-шаблонах
-
-Комментарий Hugo:
-
-```go-html-template
-{{/* Это комментарий Hugo. Он не попадет в итоговый HTML. */}}
-```
-
-HTML-комментарий:
-
-```html
-<!-- Это HTML-комментарий. Он может попасть в итоговый HTML. -->
-```
-
-Для учебных заметок внутри шаблона лучше использовать комментарии Hugo:
-
-```go-html-template
-{{/* Выводим заголовок текущей страницы */}}
-<h1>{{ .Title }}</h1>
-```
-
-## 7. Page methods / Page variables
-
-Это значения, которые относятся к текущей странице.
-
-```go-html-template
-{{ .Title }}
-{{ .Content }}
-{{ .Summary }}
-{{ .Description }}
-{{ .Date }}
-{{ .Permalink }}
-{{ .RelPermalink }}
-{{ .Params }}
-{{ .Section }}
-{{ .Kind }}
-{{ .Type }}
-{{ .IsHome }}
-{{ .IsPage }}
-{{ .IsSection }}
-```
-
-Самые важные для начала:
-
-```go-html-template
-{{ .Title }}        {{/* заголовок текущей страницы */}}
-{{ .Content }}      {{/* основной контент страницы */}}
-{{ .Description }}  {{/* описание страницы */}}
-{{ .RelPermalink }} {{/* относительная ссылка, например /about/ */}}
-```
-
-Пример:
-
-```go-html-template
-<article>
-    <h1>{{ .Title }}</h1>
-    {{ with .Description }}
-        <p>{{ . }}</p>
-    {{ end }}
-    {{ .Content }}
-</article>
-```
-
-## 8. Site methods / Site variables
-
-Это значения, которые относятся ко всему сайту.
-
-```go-html-template
-{{ .Site.Title }}
-{{ .Site.BaseURL }}
-{{ .Site.Language }}
-{{ .Site.Params }}
-{{ .Site.Menus }}
-{{ .Site.Pages }}
-{{ .Site.RegularPages }}
-{{ .Site.Taxonomies }}
-```
-
-Самые важные для начала:
-
-```go-html-template
-{{ .Site.Title }}        {{/* название сайта */}}
-{{ .Site.BaseURL }}      {{/* основной URL сайта */}}
-{{ .Site.RegularPages }} {{/* обычные страницы сайта */}}
-```
-
-Пример:
-
-```go-html-template
-<header>
-    <a href="/">{{ .Site.Title }}</a>
-</header>
-```
-
-## 9. `.Params`
-
-`.Params` — это дополнительные поля из front matter.
+`.Content` выводит Markdown-контент страницы, уже превращенный в HTML.
 
 Пример Markdown:
 
 ```markdown
----
-title: "About"
-description: "Short page description."
-image: "/images/about.jpg"
-featured: true
----
+BWWH is a learning project.
 ```
 
-В шаблоне:
+В HTML это станет:
+
+```html
+<p>BWWH is a learning project.</p>
+```
+
+## 6. Общий каркас: baseof.html
+
+Файл:
+
+```text
+themes/basic/layouts/baseof.html
+```
+
+Содержит общий HTML-каркас:
 
 ```go-html-template
-{{ .Params.image }}
-{{ .Params.featured }}
+<!DOCTYPE html>
+<html lang="{{ site.Language.Locale }}" dir="{{ or site.Language.Direction `ltr` }}">
+<head>
+  {{ partial "head.html" . }}
+</head>
+<body>
+  <header>
+    {{ partial "header.html" . }}
+  </header>
+  <main>
+    {{ block "main" . }}{{ end }}
+  </main>
+  <footer>
+    {{ partial "footer.html" . }}
+  </footer>
+</body>
+</html>
 ```
 
-Пример с проверкой:
+Пояснение:
 
-```go-html-template
-{{ if .Params.image }}
-    <img src="{{ .Params.image }}" alt="{{ .Title }}">
-{{ end }}
-```
+- `partial "head.html" .` подключает partial и передает ему текущий контекст.
+- `block "main" .` оставляет место для содержимого конкретной страницы.
+- `{{ end }}` закрывает блок.
 
-Комментарий:
+## 7. Partial
 
-- если `image` есть, картинка появится;
-- если `image` нет, Hugo просто пропустит этот блок.
-
-## 10. Условия: `if`
-
-`if` проверяет условие.
-
-```go-html-template
-{{ if .IsHome }}
-    <h1>Home page</h1>
-{{ end }}
-```
-
-Обязательно закрывай `if` через:
-
-```go-html-template
-{{ end }}
-```
+Partial — маленький шаблон, который подключается в другой шаблон.
 
 Пример:
 
 ```go-html-template
-{{ if .Description }}
-    <p>{{ .Description }}</p>
-{{ else }}
-    <p>No description yet.</p>
+{{ partial "header.html" . }}
+```
+
+Означает:
+
+> Подключи файл `themes/basic/layouts/_partials/header.html` и передай туда текущую точку `.`.
+
+Текущие partials:
+
+```text
+_partials/head.html
+_partials/header.html
+_partials/footer.html
+_partials/menu.html
+_partials/terms.html
+```
+
+## 8. Head и meta description
+
+Файл:
+
+```text
+themes/basic/layouts/_partials/head.html
+```
+
+Текущий смысл:
+
+```go-html-template
+{{ $pageTitle := cond (eq .Title "Tags") "Теги" .Title }}
+<title>{{ if .IsHome }}{{ site.Title }}{{ else }}{{ printf "%s | %s" $pageTitle site.Title }}{{ end }}</title>
+{{ with or .Description site.Params.description }}
+<meta name="description" content="{{ . }}">
 {{ end }}
 ```
 
-Комментарий:
+Пояснение:
 
-- `if` выполняет первый блок, если значение существует или равно `true`;
-- `else` выполняется, если условие не сработало.
+- `$pageTitle` — переменная для заголовка страницы.
+- `cond (eq .Title "Tags") "Теги" .Title` заменяет служебный заголовок `Tags` на русский `Теги`.
+- `.IsHome` проверяет, главная ли это страница.
+- `.Title` — заголовок текущей страницы.
+- `site.Title` — название сайта.
+- `printf "%s | %s"` собирает строку вида `О проекте | BWWH`.
+- `or .Description site.Params.description` берет описание страницы, а если его нет — общее описание сайта.
+- `with` выполняет блок только если описание найдено.
 
-## 11. `with`
+## 9. `if`
 
-`with` похож на `if`, но внутри него меняется точка `.`.
+`if` — условие.
+
+Пример из `page.html`:
+
+```go-html-template
+{{ if eq .Section "posts" }}
+  <time datetime="{{ $dateMachine }}">{{ $dateHuman }}</time>
+{{ end }}
+```
+
+Пояснение:
+
+- `eq` означает "равно".
+- `.Section` — раздел страницы.
+- Если страница находится в разделе `posts`, Hugo выводит дату.
+- Если это `about`, `resume` или `contact`, дата не выводится.
+
+## 10. Переменные
+
+Переменные начинаются с `$`.
 
 Пример:
 
 ```go-html-template
-{{ with .Description }}
-    <p>{{ . }}</p>
-{{ end }}
+{{ $dateMachine := .Date | time.Format "2006-01-02T15:04:05-07:00" }}
+{{ $dateHuman := .Date | time.Format ":date_long" }}
 ```
 
-Что происходит:
+Пояснение:
 
-1. Hugo проверяет, есть ли `.Description`.
-2. Если есть, заходит внутрь блока.
-3. Внутри блока точка `.` теперь означает само значение `.Description`.
+- `$dateMachine` — дата для HTML-атрибута `datetime`.
+- `$dateHuman` — дата для человека.
+- `:=` создает переменную.
 
-То есть это:
+## 11. Pipe `|`
+
+Pipe передает результат дальше.
+
+Пример:
 
 ```go-html-template
-{{ with .Description }}
-    <p>{{ . }}</p>
-{{ end }}
+{{ .Date | time.Format ":date_long" }}
 ```
 
-похоже на:
+Читать так:
 
-```go-html-template
-{{ if .Description }}
-    <p>{{ .Description }}</p>
-{{ end }}
-```
+1. Возьми `.Date`.
+2. Передай дату в `time.Format`.
+3. Верни отформатированную дату.
 
-Но `with` удобнее, когда значение длинное.
-
-## 12. Циклы: `range`
+## 12. `range`
 
 `range` перебирает список.
 
-Пример:
+Пример из `home.html`:
 
 ```go-html-template
-{{ range .Site.RegularPages }}
-    <h2>{{ .Title }}</h2>
+{{ range $sitePages }}
+  <section>
+    <h3><a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></h3>
+    {{ .Summary }}
+  </section>
 {{ end }}
 ```
 
-Комментарий:
+Пояснение:
 
-- `.Site.RegularPages` — список обычных страниц сайта;
-- `range` проходит по каждой странице;
-- внутри `range` точка `.` временно означает текущую страницу из списка.
+- `$sitePages` — список страниц.
+- `range` проходит по каждой странице.
+- Внутри `range` точка `.` означает текущую страницу из списка.
+- `.RelPermalink` — относительная ссылка.
+- `.LinkTitle` — заголовок для ссылки.
+- `.Summary` — краткое содержимое страницы.
 
-Пример списка страниц:
+## 13. `where`
+
+`where` фильтрует список.
+
+Текущий пример:
 
 ```go-html-template
-<ul>
-    {{ range .Site.RegularPages }}
-        <li>
-            <a href="{{ .RelPermalink }}">{{ .Title }}</a>
-        </li>
-    {{ end }}
-</ul>
+{{ $sitePages := where site.RegularPages "Section" "ne" "posts" }}
+{{ $learningPosts := where site.RegularPages "Section" "posts" }}
 ```
 
-## 13. Важная идея: точка меняется
+Пояснение:
+
+- `site.RegularPages` — все обычные страницы сайта.
+- `"Section" "posts"` оставляет только страницы раздела `posts`.
+- `"Section" "ne" "posts"` оставляет страницы, где section не равен `posts`.
+- `ne` означает "не равно".
+
+## 14. Почему точка меняется
 
 Снаружи:
 
@@ -383,453 +306,178 @@ featured: true
 {{ .Title }}
 ```
 
-может означать заголовок текущей страницы.
+это заголовок текущей страницы.
 
-Но внутри `range`:
+Но внутри:
 
 ```go-html-template
-{{ range .Site.RegularPages }}
-    {{ .Title }}
+{{ range $learningPosts }}
+  {{ .Title }}
 {{ end }}
 ```
 
-точка `.` означает уже не страницу, на которой находится шаблон, а текущую страницу из списка.
+точка означает текущий пост из списка.
 
-Чтобы сохранить старый контекст, используют переменную.
+Это ключевая идея Hugo templates:
 
-```go-html-template
-{{ $currentPage := . }}
+> Всегда проверяй, что означает точка `.` в текущем месте шаблона.
 
-{{ range .Site.RegularPages }}
-    <p>
-        Current item: {{ .Title }}
-        Site title: {{ $currentPage.Site.Title }}
-    </p>
-{{ end }}
-```
+## 15. `with`
 
-Комментарий:
-
-- `$currentPage := .` сохраняет текущий контекст в переменную;
-- переменные в шаблонах Hugo начинаются с `$`.
-
-## 14. Pipes: конвейеры
-
-Pipe — это символ:
-
-```go-html-template
-|
-```
-
-Он передает результат дальше.
-
-Пример без pipe:
-
-```go-html-template
-{{ upper .Title }}
-```
-
-Пример с pipe:
-
-```go-html-template
-{{ .Title | upper }}
-```
-
-Оба варианта делают заголовок большими буквами.
-
-Еще пример:
-
-```go-html-template
-{{ .Summary | truncate 160 }}
-```
-
-Читаем так:
-
-> Возьми `.Summary`, затем обрежь до 160 символов.
-
-## 15. Функции Hugo
-
-Функции выполняют действия над значениями.
-
-```go-html-template
-{{ now }}
-{{ len .Site.RegularPages }}
-{{ upper .Title }}
-{{ lower .Title }}
-{{ truncate 100 .Summary }}
-{{ printf "%s | %s" .Title .Site.Title }}
-```
-
-Примеры:
-
-```go-html-template
-<p>Total pages: {{ len .Site.RegularPages }}</p>
-```
-
-```go-html-template
-<title>{{ printf "%s | %s" .Title .Site.Title }}</title>
-```
-
-Комментарий:
-
-- `len` считает количество элементов;
-- `upper` делает текст большими буквами;
-- `lower` делает текст маленькими буквами;
-- `truncate` обрезает текст;
-- `printf` собирает строку по шаблону.
-
-## 16. Сравнения
-
-Частые функции для условий:
-
-```go-html-template
-eq  {{/* равно */}}
-ne  {{/* не равно */}}
-lt  {{/* меньше */}}
-le  {{/* меньше или равно */}}
-gt  {{/* больше */}}
-ge  {{/* больше или равно */}}
-```
+`with` выполняет блок, если значение существует.
 
 Пример:
 
 ```go-html-template
-{{ if eq .Section "posts" }}
-    <p>This page is inside posts section.</p>
-{{ end }}
-```
-
-Пример проверки главной страницы:
-
-```go-html-template
-{{ if .IsHome }}
-    <h1>{{ .Site.Title }}</h1>
-{{ else }}
-    <h1>{{ .Title }}</h1>
-{{ end }}
-```
-
-## 17. Фильтрация страниц: `where`
-
-`where` выбирает элементы из списка по условию.
-
-Пример:
-
-```go-html-template
-{{ $pages := where .Site.RegularPages "Section" "posts" }}
-
-{{ range $pages }}
-    <h2>{{ .Title }}</h2>
-{{ end }}
-```
-
-Комментарий:
-
-- `.Site.RegularPages` — все обычные страницы;
-- `where ... "Section" "posts"` оставляет только страницы из раздела `posts`;
-- `$pages` — переменная со списком найденных страниц.
-
-## 18. Сортировка
-
-Пример сортировки страниц по дате:
-
-```go-html-template
-{{ range sort .Site.RegularPages "Date" "desc" }}
-    <article>
-        <h2>{{ .Title }}</h2>
-        <time>{{ .Date.Format "2006-01-02" }}</time>
-    </article>
-{{ end }}
-```
-
-Комментарий:
-
-- `sort` сортирует список;
-- `"Date"` — поле для сортировки;
-- `"desc"` — от новых к старым;
-- формат даты в Go выглядит необычно: `"2006-01-02"` — это специальный пример-эталон.
-
-## 19. Пример полного `layouts/index.html`
-
-```go-html-template
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <title>{{ .Site.Title }}</title>
-</head>
-<body>
-    {{/* На главной странице выводим название сайта */}}
-    <h1>{{ .Site.Title }}</h1>
-
-    {{/* Контент из content/_index.md */}}
-    {{ .Content }}
-
-    {{/* Список всех обычных страниц сайта */}}
-    <h2>Pages</h2>
-    <ul>
-        {{ range .Site.RegularPages }}
-            <li>
-                <a href="{{ .RelPermalink }}">{{ .Title }}</a>
-            </li>
-        {{ end }}
-    </ul>
-</body>
-</html>
-```
-
-## 20. Пример полного `layouts/single.html`
-
-```go-html-template
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <title>{{ .Title }} | {{ .Site.Title }}</title>
-</head>
-<body>
-    <header>
-        <a href="/">{{ .Site.Title }}</a>
-    </header>
-
-    <main>
-        {{/* Заголовок текущей страницы */}}
-        <h1>{{ .Title }}</h1>
-
-        {{/* Описание выводим только если оно есть */}}
-        {{ with .Description }}
-            <p>{{ . }}</p>
-        {{ end }}
-
-        {{/* Основной Markdown-контент */}}
-        {{ .Content }}
-    </main>
-</body>
-</html>
-```
-
-## 21. SEO-минимум
-
-Полезные выражения для SEO:
-
-```go-html-template
-{{ .Title }}
-{{ .Description }}
-{{ .Params.description }}
-{{ .Permalink }}
-{{ .Site.Title }}
-{{ .Site.Params.description }}
-```
-
-Пример:
-
-```go-html-template
-<title>{{ .Title }} | {{ .Site.Title }}</title>
-
 {{ with .Description }}
-    <meta name="description" content="{{ . }}">
+  <meta name="description" content="{{ . }}">
 {{ end }}
 ```
 
-Если описание хранится в `.Params.description`:
+Внутри `with` точка `.` становится значением `.Description`.
 
-```go-html-template
-{{ with .Params.description }}
-    <meta name="description" content="{{ . }}">
-{{ end }}
+Если `.Description` пустой, блок не выводится.
+
+## 16. Меню
+
+Меню задано в `hugo.yaml`, а выводится в:
+
+```text
+themes/basic/layouts/_partials/menu.html
 ```
 
-## 22. Самые важные выражения для новичка
-
-База страницы:
+Главная идея:
 
 ```go-html-template
-{{ .Title }}
-{{ .Content }}
-{{ .Summary }}
-{{ .Description }}
-{{ .Date }}
-{{ .Permalink }}
-{{ .RelPermalink }}
+{{- with index site.Menus $menuID }}
+  <nav>
+    <ul>
+      {{- partial "inline/menu/walk.html" (dict "page" $page "menuEntries" .) }}
+    </ul>
+  </nav>
+{{- end }}
 ```
 
-База сайта:
+Пояснение:
+
+- `index site.Menus $menuID` берет меню по имени.
+- `with` проверяет, существует ли меню.
+- `dict` создает словарь данных для partial.
+- inline partial `walk.html` обходит пункты меню.
+
+## 17. Terms и tags
+
+Файл:
+
+```text
+themes/basic/layouts/_partials/terms.html
+```
+
+Используется в `page.html`:
 
 ```go-html-template
-{{ .Site.Title }}
-{{ .Site.BaseURL }}
-{{ .Site.Params }}
-{{ .Site.Menus }}
-{{ .Site.RegularPages }}
+{{ partial "terms.html" (dict "taxonomy" "tags" "page" .) }}
 ```
 
-Проверки:
+Пояснение:
+
+- `taxonomy` получает значение `tags`.
+- `page` получает текущую страницу.
+- partial выводит теги страницы, если они есть.
+
+## 18. Hugo Pipes для CSS и JS
+
+CSS подключается через:
+
+```text
+themes/basic/layouts/_partials/head/css.html
+```
+
+JS подключается через:
+
+```text
+themes/basic/layouts/_partials/head/js.html
+```
+
+В production Hugo:
+
+- собирает файл;
+- минифицирует его;
+- добавляет fingerprint;
+- вставляет `integrity`.
+
+Это видно в итоговом HTML после сборки.
+
+## 19. Частые выражения
 
 ```go-html-template
-{{ if .IsHome }}
-{{ if .IsPage }}
-{{ if .IsSection }}
-{{ if .Params.image }}
+{{ .Title }}              {{/* заголовок страницы */}}
+{{ .Content }}            {{/* HTML из Markdown */}}
+{{ .Description }}        {{/* описание страницы */}}
+{{ .RelPermalink }}       {{/* относительная ссылка */}}
+{{ .Section }}            {{/* раздел страницы */}}
+{{ site.Title }}          {{/* название сайта */}}
+{{ site.RegularPages }}   {{/* обычные страницы */}}
+{{ site.Params }}         {{/* параметры из hugo.yaml */}}
 ```
 
-Циклы:
+## 20. Частые ошибки
 
-```go-html-template
-{{ range .Site.RegularPages }}
-    {{ .Title }}
-{{ end }}
-```
-
-Функции:
-
-```go-html-template
-{{ upper .Title }}
-{{ lower .Title }}
-{{ truncate 160 .Summary }}
-{{ len .Site.RegularPages }}
-```
-
-## 23. Типичные ошибки
-
-### Ошибка 1: забыть `end`
+### Ошибка 1. Забыть `end`
 
 Неправильно:
 
 ```go-html-template
 {{ if .Description }}
-    <p>{{ .Description }}</p>
+  <p>{{ .Description }}</p>
 ```
 
 Правильно:
 
 ```go-html-template
 {{ if .Description }}
-    <p>{{ .Description }}</p>
+  <p>{{ .Description }}</p>
 {{ end }}
 ```
 
-### Ошибка 2: потерять контекст внутри `range`
+### Ошибка 2. Не заметить смену точки
+
+Внутри `range` точка меняется.
+
+Если нужен внешний контекст, сохрани его:
 
 ```go-html-template
-{{ range .Site.RegularPages }}
-    {{ .Site.Title }}
-{{ end }}
+{{ $currentPage := . }}
 ```
 
-Внутри `range` точка поменялась. Часто это работает, потому что у страницы тоже есть доступ к `.Site`, но для обучения лучше явно понимать смену контекста.
+### Ошибка 3. Путать `.Description` и `site.Params.description`
 
-Безопасный учебный вариант:
+- `.Description` — описание текущей страницы.
+- `site.Params.description` — общее описание сайта из `hugo.yaml`.
 
-```go-html-template
-{{ $siteTitle := .Site.Title }}
+### Ошибка 4. Искать активные шаблоны в корневой папке layouts
 
-{{ range .Site.RegularPages }}
-    <p>{{ .Title }} | {{ $siteTitle }}</p>
-{{ end }}
+В текущем проекте активные шаблоны находятся здесь:
+
+```text
+themes/basic/layouts/
 ```
 
-### Ошибка 3: путать `.Description` и `.Params.description`
+## 21. Мини-упражнения
 
-Если во front matter:
+1. В `content/about/index.md` измени `description`.
+2. Запусти `hugo`.
+3. Найди новый meta description в `public/about/index.html`.
+4. В `themes/basic/layouts/home.html` измени заголовок `Учебные посты`.
+5. Запусти `hugo server -D`.
+6. Проверь главную страницу в браузере.
+7. В `themes/basic/layouts/page.html` временно убери проверку `if eq .Section "posts"`.
+8. Посмотри, почему дата появится на страницах `О проекте`, `Навыки` и `Контакты`.
+9. Верни проверку обратно.
 
-```yaml
-description: "About me page."
-```
+## 22. Главный принцип
 
-то часто можно использовать:
+Hugo templates становятся понятнее, если каждый раз задавать два вопроса:
 
-```go-html-template
-{{ .Description }}
-```
-
-Но если значение лежит в кастомном параметре:
-
-```yaml
-myDescription: "Custom text."
-```
-
-то нужно:
-
-```go-html-template
-{{ .Params.myDescription }}
-```
-
-### Ошибка 4: писать шаблон как обычный HTML
-
-Так Hugo ничего не подставит:
-
-```html
-<h1>.Title</h1>
-```
-
-Нужно:
-
-```go-html-template
-<h1>{{ .Title }}</h1>
-```
-
-## 24. Мини-упражнения
-
-### Упражнение 1
-
-В `layouts/single.html` выведи заголовок страницы:
-
-```go-html-template
-<h1>{{ .Title }}</h1>
-```
-
-Проверь страницу `/about/`.
-
-### Упражнение 2
-
-Добавь в `content/about.md`:
-
-```yaml
-description: "This is a short About page description."
-```
-
-Выведи описание:
-
-```go-html-template
-{{ with .Description }}
-    <p>{{ . }}</p>
-{{ end }}
-```
-
-### Упражнение 3
-
-На главной странице выведи список всех страниц:
-
-```go-html-template
-<ul>
-    {{ range .Site.RegularPages }}
-        <li>
-            <a href="{{ .RelPermalink }}">{{ .Title }}</a>
-        </li>
-    {{ end }}
-</ul>
-```
-
-### Упражнение 4
-
-Покажи количество страниц:
-
-```go-html-template
-<p>Total pages: {{ len .Site.RegularPages }}</p>
-```
-
-## 25. Карта Hugo Template Expressions
-
-Hugo Template Expressions — это не просто "переменные", а смесь:
-
-1. methods — методы объектов, например `.Title`, `.Content`, `.Site.Title`;
-2. functions — функции, например `upper`, `lower`, `where`, `dict`;
-3. statements — конструкции Go templates, например `if`, `range`, `with`;
-4. pipes — передача результата дальше через `|`;
-5. variables — переменные, например `$pages`, `$siteTitle`.
-
-Главная мысль:
-
-> Всегда спрашивай себя: что сейчас означает точка `.`?
-
-Если ты понимаешь текущий context, Hugo-шаблоны становятся намного проще.
+1. Что сейчас означает точка `.`?
+2. Из какого файла Hugo взял этот шаблон?

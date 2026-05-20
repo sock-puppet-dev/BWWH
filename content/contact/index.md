@@ -1,14 +1,14 @@
 ---
 date: '2026-04-24T05:57:40+03:00'
-title: 'Contact'
-description: 'Contact and project links for the BWWH learning site.'
+title: 'Контакты'
+description: 'Ссылки учебного проекта BWWH.'
 draft: false
 ---
-This contact page keeps the project links in one place while also serving as a simple regular-page rendering example.
+Эта страница хранит ссылки проекта в одном месте и одновременно служит простым примером обычной страницы Hugo.
 
-Useful project links:
+Полезные ссылки:
 
-* Published site: <https://sock-puppet-dev.github.io/BWWH/>
-* Repository: <https://github.com/sock-puppet-dev/BWWH>
+* опубликованный сайт: <https://sock-puppet-dev.github.io/BWWH/>
+* репозиторий: <https://github.com/sock-puppet-dev/BWWH>
 
-This page is useful for testing navigation, regular page rendering, and external links in Markdown.
+Эта страница полезна для проверки навигации, рендера обычных страниц и внешних ссылок в Markdown.

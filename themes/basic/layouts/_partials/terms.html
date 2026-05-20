@@ -1,8 +1,8 @@
 {{- /*
-For a given taxonomy, renders a list of terms assigned to the page.
+Для заданной таксономии выводит список терминов, назначенных странице.
 
-@context {page} page The current page.
-@context {string} taxonomy The taxonomy.
+@context {page} page Текущая страница.
+@context {string} taxonomy Таксономия.
 
 @example: {{ partial "terms.html" (dict "taxonomy" "tags" "page" .) }}
 */}}
@@ -11,7 +11,7 @@ For a given taxonomy, renders a list of terms assigned to the page.
 {{- $taxonomy := .taxonomy }}
 
 {{- with $page.GetTerms $taxonomy }}
-  {{- $label := (index . 0).Parent.LinkTitle }}
+  {{- $label := cond (eq $taxonomy "tags") "Теги" (index . 0).Parent.LinkTitle }}
   <div>
     <div>{{ $label }}:</div>
     <ul>

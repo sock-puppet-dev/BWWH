@@ -4,7 +4,7 @@
   {{ $sitePages := where site.RegularPages "Section" "ne" "posts" }}
   {{ $learningPosts := where site.RegularPages "Section" "posts" }}
 
-  <h2>Site pages</h2>
+  <h2>Страницы сайта</h2>
   {{ range $sitePages }}
     <section>
       <h3><a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></h3>
@@ -12,7 +12,7 @@
     </section>
   {{ end }}
 
-  <h2>Learning posts</h2>
+  <h2>Учебные посты</h2>
   {{ range $learningPosts }}
     <section>
       <h3><a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></h3>

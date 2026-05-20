@@ -1,12 +1,12 @@
 ---
-title: Home
+title: Главная
 description: Учебный Hugo-проект BWWH с примерами шаблонов, тем, контента и деплоя на GitHub Pages.
 ---
 
-BWWH is a learning project for practicing Hugo, Hugo themes, Go Template expressions, and GitHub Pages deployment.
+BWWH — учебный проект для практики Hugo, Hugo themes, Go Template expressions и деплоя на GitHub Pages.
 
-On this site, you'll find:
+На этом сайте есть:
 
-* Static pages from the root `content/` directory
-* Learning posts from the local `basic` theme
-* Examples of menus, partials, taxonomies, assets, and page templates
+* обычные страницы из корневой папки `content/`;
+* учебные посты из локальной темы `basic`;
+* примеры меню, partials, taxonomies, assets и page templates.
